@@ -1,19 +1,51 @@
-# HA Sidebar Shortcuts v1.0.0
+# HA Sidebar Shortcuts v1.1.0
 # https://github.com/VeZReVouLiS/ha-sidebar-shortcuts
 #
 # Adds admin shortcuts to the bottom of the Home Assistant sidebar.
 # - Visible only to administrators (other users see their normal sidebar).
-# - Names follow each user's profile language: Greek (el) or English (everything else).
+# - Names follow each user's profile language. Missing languages fall back to English.
 # - "Apps" hides itself on installs without apps (add-ons), e.g. Container/Core.
 # - "Marketplace" hides itself on Home Assistant versions older than 2026.11.
 #
 # Requires: Custom Sidebar v17+ (elchininet/custom-sidebar), Home Assistant 2026.8+
 # Place this file at: /config/www/custom-sidebar-config.yaml
+#
+# To add a language: add one line with its code (e.g. "fr:") under each item below.
+
+js_variables:
+  trans:
+    developer_tools:
+      en: 'Developer Tools'
+      el: 'Εργαλεία προγραμματιστή'
+    devices_and_services:
+      en: 'Devices & Services'
+      el: 'Συσκευές & υπηρεσίες'
+    automations_and_scenes:
+      en: 'Automations & Scenes'
+      el: 'Αυτοματισμοί & σκηνές'
+    apps:
+      en: 'Apps'
+      el: 'Εφαρμογές'
+    marketplace:
+      en: 'Marketplace'
+      el: 'Marketplace'
+
+partials:
+  translations: |
+    const translate = (tag) => {
+      const code = String(lang).toLowerCase().split('-')[0];
+      const item = trans[tag] || {};
+      return item[code] || item.en || tag;
+    };
 
 order:
   - new_item: true
     item: developer_tools
-    name: '[[[ return String(lang).toLowerCase().startsWith("el") ? "Εργαλεία προγραμματιστή" : "Developer Tools" ]]]'
+    name: |
+      [[[
+        @partial translations
+        return translate('developer_tools');
+      ]]]
     icon: mdi:hammer
     href: /developer-tools/yaml
     hide: '[[[ return !user_is_admin ]]]'
@@ -21,7 +53,11 @@ order:
     order: 0
   - new_item: true
     item: devices_and_services
-    name: '[[[ return String(lang).toLowerCase().startsWith("el") ? "Συσκευές & υπηρεσίες" : "Devices & Services" ]]]'
+    name: |
+      [[[
+        @partial translations
+        return translate('devices_and_services');
+      ]]]
     icon: mdi:devices
     href: /config/integrations/dashboard
     hide: '[[[ return !user_is_admin ]]]'
@@ -29,7 +65,11 @@ order:
     order: 1
   - new_item: true
     item: automations_and_scenes
-    name: '[[[ return String(lang).toLowerCase().startsWith("el") ? "Αυτοματισμοί & σκηνές" : "Automations & Scenes" ]]]'
+    name: |
+      [[[
+        @partial translations
+        return translate('automations_and_scenes');
+      ]]]
     icon: mdi:robot
     href: /config/automation/dashboard
     hide: '[[[ return !user_is_admin ]]]'
@@ -37,7 +77,11 @@ order:
     order: 2
   - new_item: true
     item: apps
-    name: '[[[ return String(lang).toLowerCase().startsWith("el") ? "Εφαρμογές" : "Apps" ]]]'
+    name: |
+      [[[
+        @partial translations
+        return translate('apps');
+      ]]]
     icon: mdi:apps
     href: /config/apps/installed
     hide: '[[[ return !user_is_admin || !hass.config.components.includes("hassio") ]]]'
@@ -45,7 +89,11 @@ order:
     order: 3
   - new_item: true
     item: marketplace
-    name: Marketplace
+    name: |
+      [[[
+        @partial translations
+        return translate('marketplace');
+      ]]]
     icon: mdi:store
     href: /marketplace
     hide: '[[[ return !user_is_admin || !hass.config.components.includes("marketplace") ]]]'

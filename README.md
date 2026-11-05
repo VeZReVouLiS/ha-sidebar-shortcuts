@@ -15,7 +15,7 @@ Puts the admin pages you use every day back in the Home Assistant sidebar, one c
 It is one configuration file for [Custom Sidebar](https://github.com/elchininet/custom-sidebar) that adapts by itself:
 
 - **Admins only.** Administrators see the shortcuts. Other users keep their normal sidebar.
-- **Automatic language.** Names follow each user's profile language: Greek for `el`, English for everything else.
+- **Automatic language.** Names follow each user's profile language. English and Greek are included, and [adding yours](#add-your-language) is one line per item. Missing languages fall back to English.
 - **Only what exists.** "Apps" hides itself on installs without apps (Container/Core). "Marketplace" hides itself before Home Assistant 2026.11.
 
 ## Requirements
@@ -69,6 +69,19 @@ Already have a `custom-sidebar-config.yaml`? Don't overwrite it. Copy the items 
 
 If the `www` folder did not exist before step 3, the restart in step 4 is what makes Home Assistant serve it.
 
+## Add your language
+
+All names are in one place at the top of the file, under `js_variables` > `trans`. Add one line with your language code under each item. For example, French:
+
+```yaml
+    developer_tools:
+      en: 'Developer Tools'
+      el: 'Εργαλεία προγραμματιστή'
+      fr: 'Outils de développement'
+```
+
+The code is the first part of the language in your profile (`fr` for French, `de` for German, `pt` for both Portuguese variants). Items without your language show in English. Pull requests with new languages are welcome.
+
 ## Updates
 
 This is a configuration file, so it doesn't update itself. To hear about new versions, select **Watch** > **Custom** > **Releases** at the top of this page. To update, download the file again (step 3) and refresh your browser. No restart is needed for updates.
@@ -85,9 +98,13 @@ Delete `/config/www/custom-sidebar-config.yaml` and refresh your browser. To rem
 |---|---|
 | Nothing changes | Check that Custom Sidebar is in `extra_module_url` (step 2), then restart and hard-refresh. |
 | Shortcuts missing for one user | They are for administrators only. Check the user under **Settings** > **People**. |
-| Names are in English | The language comes from the user's profile (**Profile** > **Language**). Only Greek has its own names. |
+| Names are in English | The language comes from the user's profile (**Profile** > **Language**). Only languages listed in the file have their own names, see [Add your language](#add-your-language). |
 | "Apps" is missing | Your installation has no apps (Home Assistant Container or Core). This is expected. |
 | "Marketplace" is missing | Your Home Assistant is older than 2026.11. HACS still has its own sidebar item there. |
+
+## Credits
+
+Thanks to [elchininet](https://github.com/elchininet) for Custom Sidebar and for the idea of keeping all translations in one place.
 
 ## License
 
